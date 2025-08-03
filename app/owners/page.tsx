@@ -5,11 +5,13 @@ import { Label } from '@radix-ui/react-label';
 import { ToggleGroup, ToggleGroupItem } from '@radix-ui/react-toggle-group';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { FaArrowAltCircleRight, FaBuilding, FaEdit, FaPlus, FaTrash, FaUser } from 'react-icons/fa';
+import { FaBuilding, FaPlus, FaUser } from 'react-icons/fa';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Owner } from '../types/owner.type';
 import { Nullable } from '../types/utils.type';
+import { columns } from './columns';
+import { DataTable } from './data-table';
 
 export default function OwnersPage() {
   const router = useRouter();
@@ -82,50 +84,13 @@ export default function OwnersPage() {
     <div className='p-6 relative'>
       <h1 className='text-2xl font-bold mb-4 text-zinc-900 dark:text-zinc-100'>Tulajdonosok</h1>
       <div className='overflow-hidden rounded-lg shadow border border-zinc-200 dark:border-zinc-800'>
-        <table className='min-w-full bg-white dark:bg-zinc-900'>
-          <thead>
-            <tr className='bg-gray-100 dark:bg-zinc-800 text-gray-600 dark:text-zinc-300 uppercase text-sm leading-normal'>
-              <th className='py-3 px-6 text-left'>Név</th>
-              <th className='py-3 px-6 text-left'>Típus</th>
-              <th className='py-3 px-6 text-center'>Items</th>
-              <th className='py-3 px-6 text-center'>Műveletek</th>
-            </tr>
-          </thead>
-          <tbody className='text-gray-700 dark:text-gray-200 text-sm font-light'>
-            {owners.map((o) => (
-              <tr
-                key={o.id}
-                className='border-b border-gray-200 dark:border-zinc-700 hover:bg-gray-50 dark:hover:bg-zinc-800 transition'
-              >
-                <td className='py-3 px-6'>{o.name}</td>
-                <td className='py-3 px-6'>
-                  {o.type === 'PERSON' ? <FaUser size={18} /> : <FaBuilding size={18} />}
-                </td>
-                <td className='py-3 px-6 text-center'>{o.items}</td>
-                <td className='py-3 px-6 flex justify-center gap-3'>
-                  <Button
-                    onClick={() => openModal(o)}
-                    className='bg-yellow-400 hover:bg-yellow-500 text-white rounded-full p-2 dark:bg-yellow-500 dark:hover:bg-yellow-300 dark:text-black'
-                  >
-                    <FaEdit />
-                  </Button>
-                  <Button
-                    onClick={() => setOwnerToDelete(o)}
-                    className='bg-red-500 hover:bg-red-600 text-white rounded-full p-2 dark:bg-red-600 dark:hover:bg-red-400'
-                  >
-                    <FaTrash />
-                  </Button>
-                  <Button
-                    onClick={() => goOwner(o.id)}
-                    className='bg-green-500 hover:bg-green-600 text-white rounded-full p-2 dark:bg-green-600 dark:hover:bg-green-500'
-                  >
-                    <FaArrowAltCircleRight />
-                  </Button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <DataTable<Owner, any>
+          columns={columns}
+          data={owners}
+          editOwner={openModal}
+          setOwnerToDelete={setOwnerToDelete}
+          goOwner={goOwner}
+        />
       </div>
 
       <button
